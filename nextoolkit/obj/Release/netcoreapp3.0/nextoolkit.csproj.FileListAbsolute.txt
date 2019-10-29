@@ -1,0 +1,11 @@
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\bin\Release\netcoreapp3.0\nextoolkit.exe
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\bin\Release\netcoreapp3.0\nextoolkit.deps.json
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\bin\Release\netcoreapp3.0\nextoolkit.runtimeconfig.json
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\bin\Release\netcoreapp3.0\nextoolkit.runtimeconfig.dev.json
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\bin\Release\netcoreapp3.0\nextoolkit.dll
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\bin\Release\netcoreapp3.0\nextoolkit.pdb
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\obj\Release\netcoreapp3.0\nextoolkit.csprojAssemblyReference.cache
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\obj\Release\netcoreapp3.0\nextoolkit.AssemblyInfoInputs.cache
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\obj\Release\netcoreapp3.0\nextoolkit.AssemblyInfo.cs
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\obj\Release\netcoreapp3.0\nextoolkit.dll
+C:\Users\ADK\Documents\nextoolkit\nextoolkit\obj\Release\netcoreapp3.0\nextoolkit.pdb
