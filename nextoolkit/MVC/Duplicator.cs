@@ -12,21 +12,24 @@ namespace nextoolkit.MVC
     {
         public void MapDirectoryAndFiles(string path, string newPath, string str, string toReplace, bool pluralize = true)
         {
-            List<string> olddirectories = NexSearcher.GetDirectories(path);
-
-            List<string> newDirectories = new List<string>();
+            var offsetPath = new DirectoryInfo(path).Name;
 
             var psi = new PluralizationServiceInstance();
 
             string pluralizedToString = psi.Pluralize(toReplace);
             string pluralizedStr = psi.Pluralize(str);
 
-            foreach (var item in olddirectories)
+            if (newPath == "..")
             {
-                var files = Directory.GetFiles(item);
+                newPath = path.Replace("\\" + offsetPath,"");
+            }
 
-                foreach (var file in files)
+            var allFiles = Directory.GetFiles(path,"*.*", SearchOption.AllDirectories);
+
+
+            foreach (var file in allFiles)
                 {
+
                     List<string> lines = File.ReadAllLines(file).ToList();
 
                     List<string> newLines = new List<string>();
@@ -48,20 +51,54 @@ namespace nextoolkit.MVC
                         
                     }
 
+                    var newFilePath = offsetPath + file.Replace(path,"");
+
+                    if (newFilePath.Contains(pluralizedStr))
+                    {
+                        newFilePath = newFilePath.Replace(pluralizedStr, pluralizedToString);
+                    }
+                    else if (newFilePath.Contains(str))
+                    {
+                        newFilePath = newFilePath.Replace(str, toReplace);
+                    }
+
+                    newFilePath = newPath + "\\" + newFilePath;
+
+                    var newFileDir = Path.GetDirectoryName(newFilePath);
+
+                    if (!Directory.Exists(newFileDir))
+                    {
+                        Directory.CreateDirectory(newFileDir);
+                    }
 
 
+                    if (!File.Exists(newFilePath))
+                    {
+                        File.Create(newFilePath).Dispose();
 
+                        using (StreamWriter f = new StreamWriter(newFilePath))
+                        {
+                            foreach (var newline in newLines)
+                            {
+                                f.WriteLine(newline);
+                            }
+                        }
 
+                    }
+                    else if (File.Exists(newFilePath))
+                    {
+                        using (StreamWriter f = new StreamWriter(newFilePath))
+                        {
+                            foreach (var newline in newLines)
+                            {
+                                f.WriteLine(newline);
+                            }
+                        }
+                    }
+
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine($"New File Created: {newFilePath}");
                 }
-
-                Console.WriteLine();
-
-                //var n = item.Replace(path, newPath);
-                //newDirectories.Add(n);
-                //Console.WriteLine(n);
-            }
-
-
 
         }
 

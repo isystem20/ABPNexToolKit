@@ -52,6 +52,7 @@ namespace nextoolkit
                 {
                     if (!l.Contains("//public"))
                     {
+                        file.WriteLine("\t\t[Required]");
                         file.WriteLine(l);
                     }
                 }
@@ -171,6 +172,49 @@ namespace nextoolkit
             #endregion
         }
 
+        public void CreateEntityListDto(AppServiceModel model)
+        {
+            #region EntityListDto
+            //Make AppService
+            var dtoString = Path.Combine(model.appPathDto, model.newEntity + "ListDto.cs");
+            using (StreamWriter file = new StreamWriter(dtoString, true))
+            {
+                //Add the Entity refence
+                if (model.referencedEntityNameSpace != "")
+                {
+                    file.WriteLine("using " + model.referencedEntityNameSpace + ";");
+                }
+                foreach (var ns in model.appServiceNameSpaces)
+                {
+                    file.WriteLine("using " + ns + ";");
+                }
+                file.WriteLine("using Abp.Application.Services;");
+                file.WriteLine("using Abp.AutoMapper;");
+                file.WriteLine("using Abp.Application.Services.Dto;");
+                file.WriteLine("using System;");
+                file.WriteLine("");
+                file.WriteLine("namespace " + model.project + ".Nex" + model.newEntity + ".Dto");
+                file.WriteLine("{");
+                file.WriteLine("\tpublic class " + model.newEntity + "Dto : EntityDto<int>");
+                file.WriteLine("\t{");
+                file.WriteLine("");
+                foreach (var l in model.importedAttributes)
+                {
+                    if (!l.Contains("//public"))
+                    {
+                        file.WriteLine("\t\t[Required]");
+                        file.WriteLine(l);
+                    }
+                }
+                file.WriteLine("");
+                file.WriteLine("\t}");
+                file.WriteLine("}");
+            }
+            Console.Write($"\n{model.newEntity}ListDto.cs");
+            #endregion
+
+
+        }
 
     }
 }

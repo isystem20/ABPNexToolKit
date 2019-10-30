@@ -746,11 +746,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ADK\\Documents\\nextoolkit\\nextoolkit\\nextoolkit.csproj",
+      "projectUniqueName": "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\nextoolkit.csproj",
       "projectName": "nextoolkit",
-      "projectPath": "C:\\Users\\ADK\\Documents\\nextoolkit\\nextoolkit\\nextoolkit.csproj",
+      "projectPath": "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\nextoolkit.csproj",
       "packagesPath": "C:\\Users\\ADK\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ADK\\Documents\\nextoolkit\\nextoolkit\\obj\\",
+      "outputPath": "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
