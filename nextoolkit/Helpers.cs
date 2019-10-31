@@ -12,7 +12,63 @@ namespace nextoolkit
 {
     public class Helpers
     {
-        
+        public string getCommand(string caption, Boolean isRequired, string defaultValue = "")
+        {
+            if (isRequired)
+            {
+                var result = "";
+                do
+                {
+                    Console.Write("\n" + caption + " : ");
+                    result = Console.ReadLine();
+                } while (result == "");
+
+                return result;
+
+            }
+            else
+            {
+                Console.Write("\n" + caption + " : ");
+                var result = Console.ReadLine();
+                return result;
+            }
+        }
+
+
+        public void makeDirectory(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
+        public void displayText(string[] text, ConsoleColor bgColor = default, ConsoleColor foreColor = default, bool autoReset = true)
+        {
+            Console.BackgroundColor = bgColor;
+            Console.ForegroundColor = foreColor;
+            foreach (var t in text)
+            {
+                Console.WriteLine($"\n{t}");
+            }
+            if (autoReset)
+            {
+                Console.ResetColor();
+            }
+        }
+
+        public void displayTextNonArray(string text, ConsoleColor bgColor = default, ConsoleColor foreColor = default, bool autoReset = true)
+        {
+            Console.BackgroundColor = bgColor;
+            Console.ForegroundColor = foreColor;
+
+            Console.WriteLine($"\n{text}");
+            if (autoReset)
+            {
+                Console.ResetColor();
+            }
+        }
+
     }
 
 
@@ -71,5 +127,9 @@ namespace nextoolkit
             return Api.Singularize(name, CultureInfo) ?? name;
         }
     }
+
+
+
+
 
 }

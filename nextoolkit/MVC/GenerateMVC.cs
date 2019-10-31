@@ -2,15 +2,18 @@
 using System;
 using System.IO;
 
-namespace nextoolkit
+namespace nextoolkit.MVC
 {
-    public class AppService
+    public class GenerateMVC
     {
-        public void CreateAppService(AppServiceModel model)
+        public void CreateController(AppServiceModel model)
         {
             #region Create App Service
             //Make AppService
-            var pathString = Path.Combine(model.appPath, model.newEntity + "AppService.cs");
+
+            var psi = new PluralizationServiceInstance();
+
+            var pathString = Path.Combine(model.controllerPath, psi.Pluralize(model.newEntity) + "Controller.cs");
             using (StreamWriter file = new StreamWriter(pathString, true))
             {
                 //Add the Entity refence
@@ -125,29 +128,5 @@ namespace nextoolkit
             Console.Write($"\nFile Generated:\n{model.newEntity}AppService.cs");
             #endregion
         }
-        public void CreateAppServiceInterface(AppServiceModel model)
-        {
-            #region App Service Interface
-            //Make Update EntityDto
-            var aidtoString = Path.Combine(model.appPath, "I" + model.newEntity + "AppService.cs");
-            using (StreamWriter file = new StreamWriter(aidtoString, true))
-            {
-                file.WriteLine("using Abp.Application.Services;");
-                file.WriteLine("using " + model.project + ".Nex" + model.newEntity + ".Dto;");
-                file.WriteLine("");
-                file.WriteLine("namespace " + model.project + ".Nex" + model.newEntity + "");
-                file.WriteLine("{");
-                file.WriteLine("\tpublic interface I" + model.newEntity + "AppService : IAsyncCrudAppService<" + model.newEntity + "Dto, int, Paged" + model.newEntity + "ResultRequestDto, Create" + model.newEntity + "Dto, Update" + model.newEntity + "Dto>");
-                file.WriteLine("\t{");
-                file.WriteLine("");
-                file.WriteLine("\t\t//Put something if applicable");
-                file.WriteLine("");
-                file.WriteLine("\t}");
-                file.WriteLine("}");
-            }
-            Console.Write($"\nI" + model.newEntity + "AppService.cs");
-            #endregion
-        }
-
     }
 }

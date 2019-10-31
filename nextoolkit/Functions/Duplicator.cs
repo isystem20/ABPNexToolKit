@@ -2,14 +2,39 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
-namespace nextoolkit.MVC
+namespace nextoolkit.Functions
 {
+
     public class Duplicator
     {
+
+        private Helpers _helper;
+        public Duplicator()
+        {
+            _helper = new Helpers();
+
+        }
+
+        public void Run()
+        {
+            var path = _helper.getCommand("Folder to Duplicate", true);
+
+            var newpath = _helper.getCommand("Destination directory", true);
+
+            var strToSearch = _helper.getCommand("String to search", true);
+
+            var strToReplace = _helper.getCommand("String to replace", true);
+
+
+            MapDirectoryAndFiles(path, newpath, strToSearch, strToReplace);
+
+            Console.WriteLine("Press any key to exit.");
+            Console.ReadKey();
+            Environment.Exit(0);
+        }
+
         public void MapDirectoryAndFiles(string path, string newPath, string str, string toReplace, bool pluralize = true)
         {
             var offsetPath = new DirectoryInfo(path).Name;

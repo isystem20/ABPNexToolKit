@@ -24,5 +24,14 @@ namespace nextoolkit.Models
 
         public string[] appServiceNameSpaces { get; set; }
 
+
+
+        public string mvcController { get; set; }
+        public string mvcModels { get; set; }
+        public string mvcViews { get; set; }
+        public string mvcProject { get; set; }
+
+        public string controllerPath { get; set; }
+
     }
 }
