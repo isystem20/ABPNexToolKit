@@ -1,26 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\nextoolkit.csproj": {}
+    "C:\\Users\\Admin\\Documents\\ToolKit\\nextoolkit\\nextoolkit.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\nextoolkit.csproj": {
+    "C:\\Users\\Admin\\Documents\\ToolKit\\nextoolkit\\nextoolkit.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\nextoolkit.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\ToolKit\\nextoolkit\\nextoolkit.csproj",
         "projectName": "nextoolkit",
-        "projectPath": "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\nextoolkit.csproj",
-        "packagesPath": "C:\\Users\\ADK\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ADK\\Documents\\ABPToolKit\\nextoolkit\\obj\\",
+        "projectPath": "C:\\Users\\Admin\\Documents\\ToolKit\\nextoolkit\\nextoolkit.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\ToolKit\\nextoolkit\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\ADK\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.0"
@@ -64,12 +62,31 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+              "version": "[3.0.0, 3.0.0]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[3.0.0, 3.0.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+              "version": "[3.0.0, 3.0.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     }

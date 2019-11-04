@@ -27,8 +27,16 @@ namespace nextoolkit.Functions
 
             var strToReplace = _helper.getCommand("String to replace", true);
 
+            var enablePluralize = _helper.getCommand("Enable Pluralization? (Y/N)", true).ToUpper();
 
-            MapDirectoryAndFiles(path, newpath, strToSearch, strToReplace);
+            bool plural = false;
+
+            if (enablePluralize == "Y")
+            {
+                plural = true;
+            }
+
+            MapDirectoryAndFiles(path, newpath, strToSearch, strToReplace, plural);
 
             Console.WriteLine("Press any key to exit.");
             Console.ReadKey();
@@ -61,31 +69,57 @@ namespace nextoolkit.Functions
 
                     foreach (var line in lines)
                     {
-                        if (line.Contains(pluralizedStr))
+                        if (pluralize == true)
                         {
-                            newLines.Add(line.Replace(pluralizedStr, pluralizedToString));
-                        }
-                        else if (line.Contains(str))
-                        {
-                            newLines.Add(line.Replace(str, toReplace));
+                            if (line.Contains(pluralizedStr))
+                            {
+                                newLines.Add(line.Replace(pluralizedStr, pluralizedToString));
+                            }
+                            else if (line.Contains(str))
+                            {
+                                newLines.Add(line.Replace(str, toReplace));
+                            }
+                            else
+                            {
+                                newLines.Add(line);
+                            }
                         }
                         else
                         {
-                            newLines.Add(line);
+                            if (line.Contains(str))
+                            {
+                                newLines.Add(line.Replace(str, toReplace));
+                            }
+                            else
+                            {
+                                newLines.Add(line);
+                            }
                         }
                         
                     }
 
                     var newFilePath = offsetPath + file.Replace(path,"");
 
-                    if (newFilePath.Contains(pluralizedStr))
+                    if (pluralize == true)
                     {
-                        newFilePath = newFilePath.Replace(pluralizedStr, pluralizedToString);
+                        if (newFilePath.Contains(pluralizedStr))
+                        {
+                            newFilePath = newFilePath.Replace(pluralizedStr, pluralizedToString);
+                        }
+                        else if (newFilePath.Contains(str))
+                        {
+                            newFilePath = newFilePath.Replace(str, toReplace);
+                        }
+
                     }
-                    else if (newFilePath.Contains(str))
+                    else
                     {
-                        newFilePath = newFilePath.Replace(str, toReplace);
+                        if (newFilePath.Contains(str))
+                        {
+                            newFilePath = newFilePath.Replace(str, toReplace);
+                        }
                     }
+
 
                     newFilePath = newPath + "\\" + newFilePath;
 

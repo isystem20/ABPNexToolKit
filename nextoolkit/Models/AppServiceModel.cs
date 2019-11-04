@@ -10,11 +10,14 @@ namespace nextoolkit.Models
     {
         public string appPath { get; set; }
         public string newEntity { get; set; }
+        public string newEntityPlural { get; set; }
         public string referencedEntityNameSpace { get; set; }
         public string project { get; set; }
         public string prefixPermission { get; set; }
 
 
+        public IDictionary<string, string> entityAttributes { get; set; }
+        public IDictionary<string, string> entityEnumAttributes { get; set; }
 
 
 
@@ -32,6 +35,11 @@ namespace nextoolkit.Models
         public string mvcProject { get; set; }
 
         public string controllerPath { get; set; }
+        public string modelPath { get; set; }
+        public string viewPath { get; set; }
+        public string ajaxPath { get; set; }
+
+        public string startupPath { get; set; }
 
     }
 }

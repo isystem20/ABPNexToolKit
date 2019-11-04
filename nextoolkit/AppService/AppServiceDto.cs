@@ -8,6 +8,9 @@ namespace nextoolkit
     {
         public void CreateAll(AppServiceModel model)
         {
+            Console.WriteLine("Creating Directory for ApplicationService Dto..");
+            new Helpers().makeDirectory(model.appPathDto);
+
             CreateEntityDto(model);
 
             CreateEntityDtoRegister(model);
@@ -37,6 +40,7 @@ namespace nextoolkit
                 file.WriteLine("using Abp.AutoMapper;");
                 file.WriteLine("using Abp.Application.Services.Dto;");
                 file.WriteLine("using System;");
+                file.WriteLine("using System.ComponentModel.DataAnnotations;");
                 file.WriteLine("");
                 file.WriteLine("namespace " + model.project + ".Nex" + model.newEntity + ".Dto");
                 file.WriteLine("{");

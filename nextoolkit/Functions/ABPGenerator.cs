@@ -19,6 +19,7 @@ namespace nextoolkit.Functions
 
 
         public static IDictionary<string, string> EntityAttributes = new Dictionary<string, string>();
+        public static IDictionary<string, string> EntityEnumAttributes = new Dictionary<string, string>();
 
         public static string[] importedAttributes = { };
         public static string attributeIndicator = "{ get; set; }";
@@ -30,17 +31,22 @@ namespace nextoolkit.Functions
         public static List<string> optionalNameSpaces = new List<string> { };
         public static string[] appServiceNameSpaces = { };
 
+
+        public static string srcPath = $"src\\";
+
         //AppService
-        public static string appFolder = $"src\\Application\\";
+        public static string appFolder = $"Application\\";
         public static string appPath; //AppService Folder
         public static string appPathDto;
         public static string prefixPermission;
 
         //MVC
-        public static string mvcProject = $"src\\Web.Mvc\\";
-        public static string mvcController = $"src\\Web.Mvc\\Controllers\\";
-        public static string mvcModels = $"src\\Web.Mvc\\Models\\";
-        public static string mvcViews = $"src\\Web.Mvc\\Views\\";
+        public static string mvcProject = $"Web.Mvc\\";
+        public static string mvcController = $"Web.Mvc\\Controllers\\";
+        public static string mvcModels = $"Web.Mvc\\Models\\";
+        public static string mvcStartup = $"Web.Mvc\\Startup\\";
+        public static string mvcViews = $"Web.Mvc\\Views\\";
+        public static string mvcAjax = $"Web.Mvc\\wwwroot\\view-resources\\Views\\";
 
 
 
@@ -71,6 +77,8 @@ namespace nextoolkit.Functions
 
             var run = "Y";
 
+            var psi = new PluralizationServiceInstance();
+
             do
             {
                 var caption = "Make sure that you are running this program in the solution directory together with src/ folder where the projects are located.";
@@ -79,11 +87,11 @@ namespace nextoolkit.Functions
                 //Get Project Prefix Name
                 project = _helper.getCommand("Project Prefix", true);
 
-                //Initiate Application Folder
-                if (project != "")
-                {
-                    appFolder = $"src\\{project}.Application\\";
-                }
+                ////Initiate Application Folder
+                //if (project != "")
+                //{
+                //    appFolder = $"src\\{project}.Application\\";
+                //}
 
                 //Get Entity Name or Folder
                 var tempEntity = _helper.getCommand("Enter Entity Name", true);
@@ -96,22 +104,51 @@ namespace nextoolkit.Functions
                     prefixPermission = _helper.getCommand("Permission Prefix", false, "N");
                 }
 
-                //Parse the entity string and get file path
-                var appDirectory = entityPathParser(tempEntity, appFolder);
 
-                LocateAndParseEntity();
+
+
+
+                //Parse the entity string and get file path
+                var appDirectory = EntityPathParser(tempEntity, appFolder, true, true);
+
+                string entitypath = LocateAndParseEntity();
+
+                if (entitypath != null)
+                {
+                    getEntityAttributes(entitypath);
+                }
 
                 LocateOptionalReferences();
 
 
                 //Dto App
-                var appPathDto = appPath + "Dto\\";
+                var appPathDto = appDirectory + "Dto\\";
+
+
+                var controllerPath = EntityPathParser(tempEntity, mvcController,true,true);
+                var viewPath = EntityPathParser(tempEntity, mvcViews, false, true);
+
+
+                //Console.WriteLine(appDirectory);
+
+
+
+
+                //foreach (var item in EntityAttributes)
+                //{
+                //    Console.WriteLine(item.Key);
+                //}
+                //Console.WriteLine(viewPath);
+                //Console.ReadKey();
+                //Environment.Exit(0);
+
 
 
                 var asm = new AppServiceModel
                 {
-                    appPath = appPath,
+                    appPath = appDirectory,
                     newEntity = newEntity,
+                    newEntityPlural = psi.Pluralize(newEntity),
                     referencedEntityNameSpace = referencedEntityNameSpace,
                     project = project,
                     prefixPermission = prefixPermission,
@@ -119,7 +156,13 @@ namespace nextoolkit.Functions
                     optionalNameSpaces = optionalNameSpaces,
                     importedAttributes = importedAttributes,
                     appServiceNameSpaces = appServiceNameSpaces,
-                    controllerPath = entityPathParser(tempEntity, mvcController)
+                    controllerPath = controllerPath,
+                    modelPath = EntityPathParser(tempEntity, mvcModels),
+                    viewPath = viewPath,
+                    ajaxPath = EntityPathParser(tempEntity, mvcAjax,false),
+                    startupPath = EntityPathParser(tempEntity, mvcStartup, false),
+                    entityAttributes = EntityAttributes,
+                    entityEnumAttributes = EntityEnumAttributes
                 };
 
 
@@ -127,25 +170,6 @@ namespace nextoolkit.Functions
                 //Front End
 
                 var fe = _helper.getCommand("Generate FrontEnd? (MVC,Angular) Just press ENTER to SKIP", false).ToUpper();
-
-                switch (fe)
-                {
-                    case "MVC":
-                        Console.WriteLine("Case 1");
-
-
-
-
-                        break;
-                    case "ANGULAR":
-                        Console.WriteLine("Case 2");
-                        break;
-                    default:
-                        Console.WriteLine("Skip?");
-                        break;
-                }
-
-
 
                 _helper.makeDirectory(appPath);
                 _helper.makeDirectory(appPathDto);
@@ -160,7 +184,31 @@ namespace nextoolkit.Functions
                 createPermission();
 
 
+                switch (fe)
+                {
+                    case "MVC":
+                        Console.WriteLine("\nGenerating MVC..");
 
+                        //try
+                        //{
+                            new GenerateMVC().Run(asm);
+                        //}
+                        //catch (Exception e)
+                        //{
+                        //    Console.WriteLine(e);
+                        //    Console.ReadLine();
+                        //    Environment.Exit(0);
+                        //    throw;
+                        //}
+                        
+                        break;
+                    case "ANGULAR":
+                        Console.WriteLine("Case 2");
+                        break;
+                    default:
+                        Console.WriteLine("Skip?");
+                        break;
+                }
 
 
                 Console.WriteLine("\n\n\nRun again? Y/N");
@@ -211,19 +259,23 @@ namespace nextoolkit.Functions
 
 
         #region Private functions
-        private static string entityPathParser(string entityString, string folder)
+        private static string EntityPathParser(string entityString, string folder, bool expandPath = true, bool pluralized = false)
         {
             var n = entityString.Split(delim);
 
-            appPath = baseDirectory + folder;
+            appPath = baseDirectory + srcPath + ((project != "") ? (project + ".") : "") + folder;
+
 
             if (n.Length > 1)
             {
                 var e = n.Length - 1;
 
-                for (int i = 0; i < n.Length - 1; i++)
+                if (expandPath == true)
                 {
-                    appPath = appPath + n[i] + '\\';
+                    for (int i = 0; i < n.Length - 1; i++)
+                    {
+                        appPath = appPath + n[i] + '\\';
+                    }
                 }
                 newEntity = n[e];
 
@@ -233,9 +285,23 @@ namespace nextoolkit.Functions
                 newEntity = entityString;
             }
 
-            appPath = appPath + newEntity + "\\";
-
-            return appPath;
+            if (pluralized == true)
+            {
+                Console.WriteLine("Pluralizing..");
+                var pl = appPath + new PluralizationServiceInstance().Pluralize(newEntity) + "\\";
+                return pl;
+                //Console.WriteLine(appPath);
+            }
+            else
+            {
+                string pl = appPath;
+                if (expandPath == true)
+                { 
+                    pl = appPath + newEntity + "\\";
+                }
+                    
+                return pl;
+            }
 
         }
 
@@ -248,21 +314,47 @@ namespace nextoolkit.Functions
             {
                 if (line.Contains(attributeIndicator))
                 {
+                    //Console.WriteLine($"Found: {line}");
+
                     if (!line.Contains("ICollection") || !line.Contains($"//public"))
                     {
                         var lineMap = line.Split(' ');
-                        if (lineMap[0] == "public")
+                        string[] attributeParts = { };
+
+                        foreach (var str in lineMap)
                         {
-                            if (attributeDataTypes.Any(x => x == lineMap[1]))
+                            if (str != "")
                             {
-                                EntityAttributes.Add(lineMap[1], lineMap[2]);
+                                Array.Resize(ref attributeParts, attributeParts.Length + 1);
+                                attributeParts[attributeParts.Length - 1] = str;
+                            }
+                        }
+
+                        if (attributeParts[0] == "public")
+                        {
+                            if (attributeDataTypes.Any(x => x == attributeParts[1]))
+                            {
+                                EntityAttributes.Add(attributeParts[2], attributeParts[1]);
+                            }
+                            else if (attributeParts[1].Contains("List<"))
+                            {
+                                EntityAttributes.Add(attributeParts[2], "list"); 
                             }
                             else
                             {
-                                EntityAttributes.Add("int", lineMap[2]);
+                                EntityEnumAttributes.Add(attributeParts[2], attributeParts[1]);
                             }
+                            
+                            Console.WriteLine($"Added Attr:{attributeParts[2]}");
 
                         }
+
+                        //foreach (var item in attributeParts)
+                        //{
+                        //    Console.Write($".{item}");
+                        //}
+
+
                         Array.Resize(ref importedAttributes, importedAttributes.Length + 1);
                         importedAttributes[importedAttributes.Length - 1] = line;
                     }
@@ -275,6 +367,7 @@ namespace nextoolkit.Functions
                 }
 
             }
+
         }
         private static List<string> getEntityAttributes()
         {
@@ -291,7 +384,7 @@ namespace nextoolkit.Functions
 
                 if (permissionProvider.Count() > 0)
                 {
-                    Console.Write("Auth Provider Found:" + permissionProvider[0]);
+                    Console.Write("\nAuth Provider Found:" + permissionProvider[0]);
                     string[] lines = File.ReadAllLines(permissionProvider[0]);
                     var newContent = new List<string> { };
                     int lastline = 0;
@@ -310,11 +403,11 @@ namespace nextoolkit.Functions
                         {
                             newContent.Add(lines[i]);
                             newContent.Add("");
-                            newContent.Add("\t\t\tcontext.CreatePermission(\"" + prefixPermission + newEntity + "\",L(\"" + prefixPermission + " " + newEntity + "\"))");
-                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + newEntity + ".Create\",L(\"" + prefixPermission + " Create " + newEntity + "\"))");
-                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + newEntity + ".Read\",L(\"" + prefixPermission + " Read " + newEntity + "\"))");
-                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + newEntity + ".Update\",L(\"" + prefixPermission + " Update " + newEntity + "\"))");
-                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + newEntity + ".Delete\",L(\"" + prefixPermission + " Delete " + newEntity + "\"));");
+                            newContent.Add("\t\t\tcontext.CreatePermission(\"" + prefixPermission + "." + newEntity + "\",L(\"" + prefixPermission + " " + newEntity + "\"))");
+                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + "." + newEntity + ".Create\",L(\"" + prefixPermission + " Create " + newEntity + "\"))");
+                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + "." + newEntity + ".Read\",L(\"" + prefixPermission + " Read " + newEntity + "\"))");
+                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + "." + newEntity + ".Update\",L(\"" + prefixPermission + " Update " + newEntity + "\"))");
+                            newContent.Add("\t\t\t\t.CreateChildPermission(\"" + prefixPermission + "." + newEntity + ".Delete\",L(\"" + prefixPermission + " Delete " + newEntity + "\"));");
                         }
                         else
                         {
@@ -333,7 +426,7 @@ namespace nextoolkit.Functions
                 //file.WriteLine("\t[AbpAuthorize(PermissionNames.Pages_" + newEntity + "CRUD)]");
             }
         }
-        private void LocateAndParseEntity()
+        private string LocateAndParseEntity()
         {
             #region Entities and Attributes
             string[] allFiles = Directory.GetFiles(baseDirectory, newEntity + ".cs", SearchOption.AllDirectories);
@@ -352,12 +445,14 @@ namespace nextoolkit.Functions
                 {
                     if (parsedSelection <= allFiles.Length - 1 && parsedSelection >= 0)
                     {
-                        getEntityAttributes(allFiles[parsedSelection]);
+                        Console.WriteLine($"Collecting Entity Attributes of {allFiles[parsedSelection]}");
+                        return allFiles[parsedSelection];
                     }
                     else
                     {
                         string[] error = { "Input is out of range." };
                         _helper.displayText(error, ConsoleColor.Black, ConsoleColor.Red);
+                        return null;
                     }
 
                 }
@@ -365,17 +460,20 @@ namespace nextoolkit.Functions
                 {
                     string[] error = { "Input is not integer" };
                     _helper.displayText(error, ConsoleColor.Black, ConsoleColor.Red);
+                    return null;
                 }
 
             }
             else if (allFiles.Length == 1)
             {
-                getEntityAttributes(allFiles[0]);
+                Console.WriteLine($"Collecting Entity Attributes of {allFiles[0]}");
+                return allFiles[0];
             }
             else
             {
                 string[] error = { "Entity not found." };
                 _helper.displayText(error, ConsoleColor.Black, ConsoleColor.White);
+                return null;
             }
 
             #endregion

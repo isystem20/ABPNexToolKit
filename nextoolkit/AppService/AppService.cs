@@ -10,6 +10,9 @@ namespace nextoolkit
         {
             #region Create App Service
             //Make AppService
+            Console.WriteLine("Creating Directory for ApplicationService..");
+            new Helpers().makeDirectory(model.appPath);
+
             var pathString = Path.Combine(model.appPath, model.newEntity + "AppService.cs");
             using (StreamWriter file = new StreamWriter(pathString, true))
             {
@@ -39,7 +42,7 @@ namespace nextoolkit
                 //Apply Authentication if desired
                 if (model.referencedEntityNameSpace != "")
                 {
-                    file.WriteLine("\t//[AbpAuthorize(\"" + model.prefixPermission + model.newEntity + "\")]");
+                    file.WriteLine("\t//[AbpAuthorize(\"" + model.prefixPermission + "." + model.newEntity + "\")]");
                 }
 
                 file.WriteLine("\tpublic class " + model.newEntity + "AppService : AsyncCrudAppService<" + model.newEntity + ", " + model.newEntity + "Dto, int, Paged" + model.newEntity + "ResultRequestDto, Create" + model.newEntity + "Dto, Update" + model.newEntity + "Dto>, I" + model.newEntity + "AppService");
@@ -55,7 +58,7 @@ namespace nextoolkit
                 //Apply Authentication for READ
                 if (model.referencedEntityNameSpace != "")
                 {
-                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + model.newEntity + ".Read\")]");
+                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + "." + model.newEntity + ".Read\")]");
                 }
                 file.WriteLine("\t\tprotected override IQueryable<" + model.newEntity + "> CreateFilteredQuery(Paged" + model.newEntity + "ResultRequestDto input)");
                 file.WriteLine("\t\t{");
@@ -68,7 +71,7 @@ namespace nextoolkit
                 //Apply Authentication for CREATE
                 if (model.referencedEntityNameSpace != "")
                 {
-                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + model.newEntity + ".Create\")]");
+                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + "." + model.newEntity + ".Create\")]");
                 }
                 file.WriteLine("\t\tpublic override async Task<" + model.newEntity + "Dto> Create(Create" + model.newEntity + "Dto input)");
                 file.WriteLine("\t\t{");
@@ -84,7 +87,7 @@ namespace nextoolkit
                 //Apply Authentication for UPDATE
                 if (model.referencedEntityNameSpace != "")
                 {
-                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + model.newEntity + ".Update\")]");
+                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + "." + model.newEntity + ".Update\")]");
                 }
                 file.WriteLine("\t\tpublic override async Task<" + model.newEntity + "Dto> Update(Update" + model.newEntity + "Dto input)");
                 file.WriteLine("\t\t{");
@@ -99,7 +102,7 @@ namespace nextoolkit
                 //Apply Authentication for DELETE
                 if (model.referencedEntityNameSpace != "")
                 {
-                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + model.newEntity + ".Delete\")]");
+                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + "." + model.newEntity + ".Delete\")]");
                 }
                 file.WriteLine("\t\tpublic override async Task Delete(EntityDto<int> input)");
                 file.WriteLine("\t\t{");
@@ -111,7 +114,7 @@ namespace nextoolkit
                 //Apply Authentication for READ SINGLE
                 if (model.referencedEntityNameSpace != "")
                 {
-                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + model.newEntity + ".Read\")]");
+                    file.WriteLine("\t\t[AbpAuthorize(\"" + model.prefixPermission + "." + model.newEntity + ".Read\")]");
                 }
                 file.WriteLine("\t\tprotected override async Task<" + model.newEntity + "> GetEntityByIdAsync(int id)");
                 file.WriteLine("\t\t{");
